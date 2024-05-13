@@ -1,8 +1,10 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Max
+# from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import *
+from .forms import *
 
 
 def home(request):
@@ -16,6 +18,26 @@ def home(request):
     return render(request, 'app/home.html', context)
 
 
+def product_page(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    
+    bids_count = product.bids.count()
+    highest_bid = product.bids.aggregate(Max('amount'))['amount__max']
+
+    highest_bid_obj = None
+    if highest_bid is not None:
+        highest_bid_obj = product.bids.filter(amount=highest_bid).first()
+
+    context = {
+        'product': product,
+        'highest_bid': highest_bid_obj,
+        'bids_count': bids_count,
+    }
+
+    return render(request, 'product/product.html', context)
+
+
+
 def login_page(request):
     page = 'login'
 
@@ -26,21 +48,21 @@ def login_page(request):
         email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
-    try:
-        user = User.objects.get(email=email)
-    except:
-        message.error(request, 'User does not exist, try again!')
+        try:
+            user = User.objects.get(email=email)
+        except:
+            message.error(request, 'User does not exist, try again!')
 
-    user = authenticate(request, email=email, password=password)
+        user = authenticate(request, email=email, password=password)
 
-    if user is not None:
-        login(request, user)
-        return redirect('home')
-    else:
-        message.error(request, 'Invalid username or password')
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            message.error(request, 'Invalid username or password')
     
     context = {'page': page}
-    return render(request, 'app/auth/login_register.html', context)
+    return render(request, 'auth/login_register.html', context)
 
 
 def register_page(request):
@@ -62,4 +84,4 @@ def register_page(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('home')
+    return redirect('login')
