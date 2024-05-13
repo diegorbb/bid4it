@@ -9,7 +9,6 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
 class Product(models.Model):
-    # seller =
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     starting_price = models.FloatField(null=True, blank=True)
@@ -21,4 +20,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class Bid(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bids')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"User: {self.user}, Item: {self.item}, Amount: {self.amount}"
+
     
