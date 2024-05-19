@@ -1,0 +1,26 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="container pt-5">
+    <h1>{{ user.name }}'s <span class="highlight">Bids</span></h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Bid Amount</th>
+            <th scope="col">Date</th>
+            </tr>
+        </thead>
+        {% for bid in bids %}
+        <tbody>
+            <tr>
+            <td>{{ bid.item.title }}</td>
+            <td>£{{ bid.amount }}</td>
+            <td>06/10/2025</td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock content %}

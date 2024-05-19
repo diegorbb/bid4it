@@ -8,12 +8,21 @@ from .forms import *
 
 
 def home(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(archived=False)
     product_count = products.count()
 
+    product_has_bids = []
+
+    for product in products:
+        highest_bid = product.bids.aggregate(Max('amount'))['amount__max']
+        product_has_bids.append({
+            'product': product,
+            'highest_bid': highest_bid if highest_bid is not None else 0,
+        })
+
     context = {
-        'products': products,
         'product_count': product_count,
+        'product_has_bids': product_has_bids,
     }
     return render(request, 'app/home.html', context)
 
@@ -36,6 +45,20 @@ def product_page(request, pk):
 
     return render(request, 'product/product.html', context)
 
+
+def list_product(request):
+    if request.method == 'POST':
+        form = ListProduct(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.seller = request.user
+            product.save()
+            return redirect('home')
+    else:
+        form = ListProduct()
+
+    context = {'form': form}
+    return render(request, 'product/list_product.html', context)
 
 
 def login_page(request):
@@ -85,3 +108,37 @@ def register_page(request):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+def user_bids(request, pk):
+    user = get_object_or_404(User, id=pk)
+    bids = user.bids.all()
+
+    context = {'bids': bids}
+
+    return render(request, 'user/user_bids.html', context)
+
+
+def user_listings(request, pk):
+    user = get_object_or_404(User, id=pk)
+    listings = Product.objects.filter(seller=user, archived=False)
+
+    context = {'listings': listings}
+
+    return render(request, 'user/user_listings.html', context)
+
+
+def archive_listing(request, pk):
+    listing = get_object_or_404(Product, id=pk)
+
+    if request.method == 'POST':
+        form = ArchiveListingForm(request.POST)
+        if form.is_valid():
+            if request.user == listing.seller:
+                listing.archived = True
+                listing.save()
+            return redirect('user-listings', pk=request.user.pk)
+    else:
+        form = ArchiveListingForm()
+
+    return render(request, 'user/archive_listing.html', {'form': form, 'listing': listing})

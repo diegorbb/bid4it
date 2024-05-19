@@ -1,18 +1,20 @@
 {% load static %}
 
-{% for product in products %}
+
+{% for product in product_has_bids %}
 <div class="col mb-5">
     <div class="card h-100">
-        <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
+        <img class="card-img-top fixed-size-img" src="{{ product.product.image.url }}" alt="..." />
         <div class="card-body p-4">
             <div class="text-center">
-                <h5 class="fw-bolder">{{ product.title }}</h5>
+                <h5 class="fw-bolder">{{ product.product.title }}</h5>
                 <hr>
-                £{{ product.starting_price }}
+                <p>Starting price: £{{ product.product.starting_price }}</p>
+                <p>Highest Bid: {% if product.highest_bid %}£{{ product.highest_bid }}{% else %}No bids yet{% endif %}</p>
             </div>
         </div>
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product-page' product.id %}">See details</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product-page' product.product.id %}">See details</a></div>
         </div>
     </div>
 </div>
