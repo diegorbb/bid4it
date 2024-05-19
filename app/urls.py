@@ -11,4 +11,10 @@ urlpatterns = [
 
     # Product paths
     path('product/<str:pk>', views.product_page, name='product-page'),
+    path('list_product', views.list_product, name='list-item'),
+
+    # User paths
+    path('user/<int:pk>/my-bids/', views.user_bids, name='user-bids'),
+    path('user/<int:pk>/my-listings', views.user_listings, name='user-listings'),
+    path('my-listings/listing/<int:pk>/archive/', views.archive_listing, name='archive-listing'),
 ]

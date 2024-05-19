@@ -1,0 +1,29 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="container pt-5">
+    <h1>{{ user.name }}'s <span class="highlight">Listings</span></h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Date</th>
+            <th scope="col">Action</th>
+            </tr>
+        </thead>
+        {% for listing in listings %}
+        <tbody>
+            <tr>
+            <td>{{ listing.title }}</td>
+            <td>06/10/2025</td>
+            <td>
+                <a href="#" class="text-decoration-none"><i class="bi bi-pencil-fill"></i></a>
+                <a href="{% url 'archive-listing' listing.pk %}" class="text-decoration-none ms-3"><i class="bi bi-archive"></i></a>
+            </td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock content %}

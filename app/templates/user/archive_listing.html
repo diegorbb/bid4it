@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="modal fade show" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalLabel" aria-modal="true" role="dialog" style="display: block;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="archiveModalLabel">Confirm Archive</h5>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to archive the product "{{ listing.title }}"?
+            </div>
+            <div class="modal-footer">
+                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-secondary">Cancel</a>
+                <form method="post" action="{% url 'archive-listing' listing.pk %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-warning">Archive</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
