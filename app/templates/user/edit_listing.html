@@ -1,0 +1,61 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h2>Edit Listing</h2>
+    <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="id_title" name="title" value="{{ form.title.value|default_if_none:'' }}">
+            {% if form.title.errors %}
+            <div class="text-danger">
+                {% for error in form.title.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="id_description" class="form-label">Description</label>
+            <textarea class="form-control" id="id_description" name="description" rows="4">{{ form.description.value|default_if_none:'' }}</textarea>
+            {% if form.description.errors %}
+            <div class="text-danger">
+                {% for error in form.description.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="id_archived" name="archived" {% if form.archived.value %}checked{% endif %}>
+            <label class="form-check-label" for="id_archived">Archived</label>
+            {% if form.archived.errors %}
+            <div class="text-danger">
+                {% for error in form.archived.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="id_image" name="image">
+            {% if form.image.errors %}
+            <div class="text-danger">
+                {% for error in form.image.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if listing.image %}
+            <div class="mt-2">
+                <img src="{{ listing.image.url }}" alt="Current Image" class="img-thumbnail" style="max-width: 200px;">
+            </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

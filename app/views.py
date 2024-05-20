@@ -3,6 +3,7 @@ from django.db.models import Max
 # from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from decimal import Decimal
 from .models import *
 from .forms import *
 
@@ -27,22 +28,56 @@ def home(request):
     return render(request, 'app/home.html', context)
 
 
+# def product_page(request, pk):
+#     product = get_object_or_404(Product, id=pk)
+
+    
+#     bids_count = product.bids.count()
+#     highest_bid = product.bids.aggregate(Max('amount'))['amount__max']
+
+#     highest_bid_obj = None
+#     if highest_bid is not None:
+#         highest_bid_obj = product.bids.filter(amount=highest_bid).first()
+
+#     context = {
+#         'product': product,
+#         'highest_bid': highest_bid_obj,
+#         'bids_count': bids_count,
+#     }
+
+#     return render(request, 'product/product.html', context)
+
 def product_page(request, pk):
     product = get_object_or_404(Product, id=pk)
-    
+    bids = product.bids.all().order_by('-amount')
     bids_count = product.bids.count()
-    highest_bid = product.bids.aggregate(Max('amount'))['amount__max']
+    highest_bid = bids.first().amount if bids.exists() else None
+    starting_price = product.starting_price
 
-    highest_bid_obj = None
-    if highest_bid is not None:
-        highest_bid_obj = product.bids.filter(amount=highest_bid).first()
+    if request.method == 'POST':
+        form = BidForm(request.POST)
+        if form.is_valid():
+            bid = form.cleaned_data['amount']
+            min_bid = starting_price if highest_bid is None else highest_bid + Decimal('2.00')
+
+            if bid < min_bid:
+                messages.error(request, f'Your bid must be at least £{min_bid}.')
+            else:
+                new_bid = Bid(user=request.user, item=product, amount=bid)
+                new_bid.save()
+                messages.success(request, 'Your bid has been placed successfully!')
+                return redirect('product-page', pk=pk)
+    else:
+        form = BidForm()
 
     context = {
         'product': product,
-        'highest_bid': highest_bid_obj,
+        'bids': bids,
         'bids_count': bids_count,
+        'highest_bid': highest_bid,
+        'starting_price': starting_price,
+        'form': form,
     }
-
     return render(request, 'product/product.html', context)
 
 
@@ -142,3 +177,19 @@ def archive_listing(request, pk):
         form = ArchiveListingForm()
 
     return render(request, 'user/archive_listing.html', {'form': form, 'listing': listing})
+
+
+def edit_listing(request, pk):
+
+    listing = Product.objects.get(id=pk)
+    form = ListingForm(instance=listing)
+
+    if request.method == 'POST':
+        form = ListingForm(request.POST, instance=listing)
+        if form.is_valid():
+            form.save()
+            return redirect('user-listings', pk=request.user.pk)
+    
+    context = {'form': form}
+
+    return render(request, 'user/edit_listing.html', context)

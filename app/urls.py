@@ -17,4 +17,5 @@ urlpatterns = [
     path('user/<int:pk>/my-bids/', views.user_bids, name='user-bids'),
     path('user/<int:pk>/my-listings', views.user_listings, name='user-listings'),
     path('my-listings/listing/<int:pk>/archive/', views.archive_listing, name='archive-listing'),
+    path('my-listings/listing/<int:pk>/edit/', views.edit_listing, name='edit-listing'),
 ]

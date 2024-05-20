@@ -26,8 +26,8 @@
                         <li><span class="dropdown-item">{{ user.username }}</span></li>
                         <hr>
                         <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="{% url 'user-bids' user.id %}">Bids</a></li>
-                        <li><a class="dropdown-item" href="{% url 'user-listings' user.id %}">Listings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'user-bids' user.id %}">My Bids</a></li>
+                        <li><a class="dropdown-item" href="{% url 'user-listings' user.id %}">My Listings</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}" style="display: inline;">
                                 {% csrf_token %}

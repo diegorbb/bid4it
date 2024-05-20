@@ -26,3 +26,9 @@ class BidForm(ModelForm):
     class Meta:
         model = Bid
         fields = ['amount']
+
+
+class ListingForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ['title', 'description', 'archived', 'image']
