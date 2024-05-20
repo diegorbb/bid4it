@@ -17,7 +17,7 @@
             <td>{{ listing.title }}</td>
             <td>06/10/2025</td>
             <td>
-                <a href="#" class="text-decoration-none"><i class="bi bi-pencil-fill"></i></a>
+                <a href="{% url 'edit-listing' listing.pk %}" class="text-decoration-none"><i class="bi bi-pencil-fill"></i></a>
                 <a href="{% url 'archive-listing' listing.pk %}" class="text-decoration-none ms-3"><i class="bi bi-archive"></i></a>
             </td>
             </tr>
