@@ -109,7 +109,7 @@ def login_page(request):
         try:
             user = User.objects.get(email=email)
         except:
-            message.error(request, 'User does not exist, try again!')
+            messages.error(request, 'User does not exist, try again!')
 
         user = authenticate(request, email=email, password=password)
 
@@ -117,27 +117,28 @@ def login_page(request):
             login(request, user)
             return redirect('home')
         else:
-            message.error(request, 'Invalid username or password')
+            messages.error(request, 'Invalid email or password')
     
     context = {'page': page}
     return render(request, 'auth/login_register.html', context)
 
 
 def register_page(request):
-    form = UserCreationForm()
-
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = MyUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            user.username = user.email  # Set the email as the username
             user.email = user.email.lower()
             user.save()
             login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'An error occurred during registration')
-        
-    return render(request, 'app/auth/login_register.hmtl')
+    else:
+        form = MyUserCreationForm()
+    
+    return render(request, 'auth/login_register.html', {'form': form})
 
 
 def logout_user(request):
