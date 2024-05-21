@@ -5,17 +5,40 @@
 <section class="py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="row gx-4 gx-lg-5 align-items-center">
-            <form class="form" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <div class="py-4">
-                    <button type="submit" class="btn btn-outline-success">List</button>
-                    <a class="btn btn-outline-dark" href="{{request.META.HTTP_REFERER}}">Cancel</a>
-                </div>
-            </form>
+            <div class="col-md-8 mx-auto">
+                <form class="form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-floating mb-3">
+                        <input name="title" type="text" class="form-control" id="title" placeholder="Product Title">
+                        <label for="title">Title</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea name="description" class="form-control" id="description" placeholder="Product Description" rows="5"></textarea>
+                        <label for="description">Description</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input name="starting_price" type="number" step="0.01" class="form-control" id="starting_price" placeholder="Starting Price">
+                        <label for="starting_price">Starting Price</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input name="archived" type="checkbox" class="form-check-input" id="archived">
+                        <label class="form-check-label" for="archived">Archived</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Product Image</label>
+                        <input name="image" type="file" class="form-control" id="image">
+                    </div>
+                    <div class="py-4">
+                        <button type="submit" class="btn btn-outline-success">List</button>
+                        <a class="btn btn-outline-dark" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-<section>
+</section>
+
+
 
 
 {% endblock content %}
