@@ -28,37 +28,19 @@ def home(request):
     return render(request, 'app/home.html', context)
 
 
-# def product_page(request, pk):
-#     product = get_object_or_404(Product, id=pk)
-
-    
-#     bids_count = product.bids.count()
-#     highest_bid = product.bids.aggregate(Max('amount'))['amount__max']
-
-#     highest_bid_obj = None
-#     if highest_bid is not None:
-#         highest_bid_obj = product.bids.filter(amount=highest_bid).first()
-
-#     context = {
-#         'product': product,
-#         'highest_bid': highest_bid_obj,
-#         'bids_count': bids_count,
-#     }
-
-#     return render(request, 'product/product.html', context)
-
 def product_page(request, pk):
     product = get_object_or_404(Product, id=pk)
     bids = product.bids.all().order_by('-amount')
     bids_count = product.bids.count()
-    highest_bid = bids.first().amount if bids.exists() else None
+    highest_bid_amount = bids.first().amount if bids.exists() else None
+    highest_bid = bids.first() if bids.exists() else None
     starting_price = product.starting_price
 
     if request.method == 'POST':
         form = BidForm(request.POST)
         if form.is_valid():
             bid = form.cleaned_data['amount']
-            min_bid = starting_price if highest_bid is None else highest_bid + Decimal('2.00')
+            min_bid = starting_price if highest_bid_amount is None else highest_bid_amount + Decimal('2.00')
 
             if bid < min_bid:
                 messages.error(request, f'Your bid must be at least £{min_bid}.')

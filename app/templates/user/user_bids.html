@@ -14,7 +14,7 @@
         {% for bid in bids %}
         <tbody>
             <tr>
-            <td>{{ bid.item.title }}</td>
+            <td><a href="{% url 'product-page' bid.item.id %}">{{ bid.item.title }}</a></td>
             <td>£{{ bid.amount }}</td>
             <td>{{ bid.created }}</td>
             </tr>

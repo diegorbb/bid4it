@@ -10,7 +10,7 @@
                 <h5 class="fw-bolder">{{ product.product.title }}</h5>
                 <hr>
                 <p>Starting price: £{{ product.product.starting_price }}</p>
-                <p>Highest Bid: {% if product.highest_bid %}£{{ product.highest_bid }}{% else %}No bids yet{% endif %}</p>
+                <p>Highest Bid: {% if product.highest_bid %}£{{ product.highest_bid|floatformat:2 }}{% else %}No bids yet{% endif %}</p>
             </div>
         </div>
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">

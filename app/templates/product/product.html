@@ -7,6 +7,14 @@
         <div class="row gx-4 gx-lg-5 align-items-center">
             <p class="fs-1">{{ product.title }}</p>
             <hr>
+            {% if highest_bid %}
+            <p>Highest bid: £{{ highest_bid.amount }}</p>
+                {% if highest_bid.user == request.user %}
+                <p>You're currently the highest bidder</p>
+                {% endif %}
+            {% else %}
+            <p>No bids yet.</p>
+            {% endif %}
             <div class="col-md-6"> <!-- Adjust the column width as needed -->
                 <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
                     <div class="carousel-item active">
@@ -22,7 +30,7 @@
                         <p>Starting price: £{{ product.starting_price }}</p>
                         <p>Bids: {{ bids_count }}</p>
                         {% if highest_bid %}
-                        <p>Current price: £{{ highest_bid }}</p>
+                        <p>Current price: £{{ highest_bid.amount }}</p>
                         {% else %}
                         <p>No bids yet</p>
                         {% endif %}
@@ -57,7 +65,13 @@
                         <p class="card-text lead">{{ product.description }}</p>
                     </div>
                 </div>
-            </div>            
+            </div>
+            <ul>
+                <h1>Bid History</h1>
+                {% for bid in bids %}
+                    <li>{{ bid.user.username }}: £{{ bid.amount }} on {{ bid.created }}</li>
+                {% endfor %}
+            </ul>           
         </div>
     </div>
 </section>
