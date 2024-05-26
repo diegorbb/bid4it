@@ -1,21 +1,35 @@
 {% load static %}
+{% load custom_filters %}
 
-
-{% for product in product_has_bids %}
+{% for item in product_has_bids %}
 <div id="product-list" class="col mb-5">
     <div class="card h-100">
-        <img class="card-img-top fixed-size-img" src="{{ product.product.image.url }}" alt="..." />
+        <div class="position-relative">
+            <img class="card-img-top fixed-size-img" src="{{ item.product.image.url }}" alt="..." />
+            {% if item.remaining_time %}
+                {% if item.remaining_time.total_seconds > 0 %}
+                <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                    Ends in {{ item.days }}d {{ item.hours }}h {{ item.minutes }}m
+                </span>
+                {% else %}
+                <span class="position-absolute top-0 start-0 m-2 badge bg-danger text-light">Auction Ended</span>
+                {% endif %}
+            {% else %}
+                <span class="position-absolute top-0 start-0 m-2 badge bg-secondary text-light">No End Date</span>
+            {% endif %}
+        </div>
         <div class="card-body p-4">
             <div class="text-center">
-                <h5 class="fw-bolder">{{ product.product.title }}</h5>
+                <h5 class="fw-bolder">{{ item.product.title }}</h5>
                 <hr>
-                <p>Starting price: £{{ product.product.starting_price }}</p>
-                <p>Highest Bid: {% if product.highest_bid %}£{{ product.highest_bid|floatformat:2 }}{% else %}No bids yet{% endif %}</p>
+                <p>Starting price: £{{ item.product.starting_price }}</p>
+                <p>Highest Bid: {% if item.highest_bid %}£{{ item.highest_bid|floatformat:2 }}{% else %}No bids yet{% endif %}</p>
             </div>
         </div>
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product-page' product.product.id %}">See details</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product-page' item.product.id %}">See details</a></div>
         </div>
     </div>
 </div>
 {% endfor %}
+

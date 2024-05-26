@@ -11,7 +11,9 @@ urlpatterns = [
 
     # Product paths
     path('product/<str:pk>', views.product_page, name='product-page'),
-    path('list_product', views.list_product, name='list-item'),
+    path('list_product/', views.list_product, name='list-item'),
+    path('listings/', views.listings, name='dashboard'),
+    path('listings/category/<int:category_id>/', views.listings, name='listings-by-category'),
 
     # User paths
     path('user/<int:pk>/my-bids/', views.user_bids, name='user-bids'),

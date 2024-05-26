@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% load custom_filters %}
 
 {% block content %}
 
@@ -8,24 +9,27 @@
             <p class="fs-1">{{ product.title }}</p>
             <hr>
             {% if highest_bid %}
-            <p>Highest bid: £{{ highest_bid.amount }}</p>
                 {% if highest_bid.user == request.user %}
                 <p>You're currently the highest bidder</p>
                 {% endif %}
             {% else %}
             <p>No bids yet.</p>
             {% endif %}
-            <div class="col-md-6"> <!-- Adjust the column width as needed -->
+            <div class="col-md-6"> 
                 <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
                     <div class="carousel-item active">
-                        <img src="{{ product.image.url }}" class="w-100" alt="..."> <!-- Adjust image width -->
+                        <img src="{{ product.image.url }}" class="w-100" alt="...">
                     </div>
-                    <!-- Add carousel controls if needed -->
                 </div>
             </div>
-            <div class="col-md-6"> <!-- Adjust the column width as needed -->
+            <div class="col-md-6">
                 <div class="col-md-10">
                     <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+                    {% if product.end_date < now %}
+                    <p>Ended on: {{ product.end_date|date:"Y-m-d H:i" }}</p><br>
+                    {% else %}
+                    <p>Ends on: {{ product.end_date|date:"Y-m-d H:i" }}</p><br>
+                    {% endif %}
                     <div class="fs-5 mb-5">
                         <p>Starting price: £{{ product.starting_price }}</p>
                         <p>Bids: {{ bids_count }}</p>
@@ -36,13 +40,14 @@
                         {% endif %}
                     </div>
                     <div class="d-flex">
-                        {% if request.user == product.seller %}
-                        {% else %}
-                        <form method="post">
-                            {% csrf_token %}
-                            {{ form.as_p }}
-                            <button type="submit" class="btn btn-primary">Place Bid</button>
-                        </form>
+                        {% if product.end_date >= now %}
+                            {% if request.user != product.seller %}
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary">Place Bid</button>
+                            </form>
+                            {% endif %}
                         {% endif %}
                     </div>
                     {% if messages %}
@@ -66,12 +71,27 @@
                     </div>
                 </div>
             </div>
-            <ul>
-                <h1>Bid History</h1>
-                {% for bid in bids %}
-                    <li>{{ bid.user.username }}: £{{ bid.amount }} on {{ bid.created }}</li>
-                {% endfor %}
-            </ul>           
+            <h2 class="mt-5">Bid History</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Bidder</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bid in bids %}
+                            <tr>
+                                <td>{{ bid.user.username|initials }}</td>
+                                <td>£{{ bid.amount }}</td>
+                                <td>{{ bid.created }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>           
         </div>
     </div>
 </section>

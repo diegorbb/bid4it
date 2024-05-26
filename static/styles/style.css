@@ -71,3 +71,70 @@ html {
   margin: 40px 0;
   padding: 10px;
 }
+
+body, html {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 225px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-shadow: 2px 0 5px rgba(3, 116, 69, 0.1);
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  margin-left: 250px; /* Adjust according to the sidebar width */
+  padding: 20px;
+}
+
+.sidebar .nav-link {
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #e9ecef; /* Adjust the color as needed */
+}
+
+.product-card {
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.product-card img {
+  max-width: 150px;
+  max-height: 150px;
+  margin-right: 1rem;
+}
+
+.product-card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.product-card-details {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+footer {
+  margin-top: auto;
+}
+
+.auth-title {
+  font-size: 2rem; /* Adjust the font size as needed */
+  color: #333; /* Adjust the color as needed */
+  text-align: center; /* Center the text */
+  margin-bottom: 20px; /* Add some space below the heading */
+}
