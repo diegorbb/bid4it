@@ -12,10 +12,18 @@ class MyUserCreationForm(UserCreationForm):
 
 
 class ListProduct(ModelForm):
+    DURATION_CHOICES = [
+        (3, '3 days'),
+        (5, '5 days'),
+        (7, '7 days'),
+    ]
+
+    duration = forms.ChoiceField(choices=DURATION_CHOICES, label='Auction Duration')
+
     class Meta:
         model = Product
         fields = "__all__"
-        exclude = ['seller']
+        exclude = ['seller', 'archived']
 
 
 class ArchiveListingForm(forms.Form):

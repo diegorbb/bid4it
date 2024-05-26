@@ -1,0 +1,84 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar border-right">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item font-weight-bold">
+                        <a class="nav-link" href="{% url 'dashboard' %}" id="all-listings" data-category="all">All listings</a>
+                        <a class="nav-link" data-bs-toggle="collapse" href="#categoryCollapse" role="button" aria-expanded="false" aria-controls="categoryCollapse">
+                            Categories
+                        </a>
+                        <div class="collapse" id="categoryCollapse">
+                            <ul class="nav flex-column ms-3">
+                                {% for category in categories %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'listings-by-category' category.id %}" data-category="{{ category.slug }}">{{ category.name }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#filterCollapse" role="button" aria-expanded="false" aria-controls="filterCollapse">
+                            Filters
+                        </a>
+                        <div class="collapse" id="filterCollapse">
+                            <ul class="nav flex-column ms-3">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-filter="time-left">Time Left</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-filter="recently-added">Recently Added</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-filter="price">Price</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    {% if category %}
+                        Listings for {{ category.name }}
+                    {% else %}
+                        All listings
+                    {% endif %}
+                </h1>
+                <p>We currently have {{ count }} active listings</p>
+            </div>
+
+            <div id="product-list">
+                {% for product in product_has_bids %}
+                <div class="product-card" data-category="{{ product.product.category.slug }}">
+                    <img src="{{ product.product.image.url }}" alt="Product Image" class="img-fluid">
+                    <div>
+                        <a class="product-card-title" href="{% url 'product-page' product.product.id %}">{{ product.product.title }}</a>
+                        <div class="product-card-details">
+                            Ends on: {{ product.product.end_date|date:"d-m-Y H:ia" }}<br> Current price: 
+                            {% if product.highest_bid %}
+                                £{{ product.highest_bid|floatformat:2 }}
+                            {% else %}
+                                £{{ product.starting_price|floatformat:2 }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
